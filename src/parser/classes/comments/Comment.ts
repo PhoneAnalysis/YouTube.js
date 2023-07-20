@@ -175,7 +175,9 @@ export default class Comment extends YTNode {
 
     return { ...response, content };
   }
-
+  getAction(){
+    return this.#actions;
+  }
   setActions(actions: Actions | undefined) {
     this.#actions = actions;
   }
