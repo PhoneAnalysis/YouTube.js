@@ -128,7 +128,10 @@ export default class HTTPClient {
     }
 
     const request = new Platform.shim.Request(request_url, input instanceof Platform.shim.Request ? input : init);
-
+    console.info(request);
+    console.info(request_url);
+    console.info(request_body);
+    console.info(request_headers);
     const response = await this.#fetch(request, {
       body: request_body,
       headers: request_headers,
