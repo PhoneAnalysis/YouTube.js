@@ -1,7 +1,6 @@
 import type { IPerformCommentActionRequest, PerformCommentActionEndpointOptions } from '../../../types/index.js';
 
 export const PATH = '/comment/perform_comment_action';
-
 /**
  * Builds a `/comment/perform_comment_action` request payload.
  * @param options - The options to use.

@@ -184,17 +184,29 @@ export default class Comment extends YTNode {
 				 var obj=JSON.parse(JSON.stringify(item.key('endpoint').object()));
 				  console.info(obj.payload.globalConfiguration.params);
 				  const target_action=obj.payload.globalConfiguration.params;
+          console.info({
+            key: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+            actions: [ target_action ],
+            ...{
+              client: 'ANDROID'
+            }});
 				   const response = await this.#actions?.execute(
-            PerformCommentActionEndpoint.PATH, PerformCommentActionEndpoint.build({
-              client: 'ANDROID',
-              actions: [ target_action ]
-            })
+            PerformCommentActionEndpoint.PATH,{
+              key: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+              actions: [ target_action ],
+              ...{
+                client: 'ANDROID'
+              }
+            }
           );
 				   console.info(response);
 		   }
 		 
 			}
 	  }
+  }
+  getActions(){
+    return this.#actions;
   }
   setActions(actions: Actions | undefined) {
     this.#actions = actions;
