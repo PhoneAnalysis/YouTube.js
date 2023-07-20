@@ -10,7 +10,7 @@ import CommentActionButtons from './CommentActionButtons.js';
 import CommentReplyDialog from './CommentReplyDialog.js';
 import PdgCommentChip from './PdgCommentChip.js';
 import SponsorCommentBadge from './SponsorCommentBadge.js';
-
+import { CreateCommentEndpoint, PerformCommentActionEndpoint } from '../../../core/endpoints/comment/index.js';
 import Proto from '../../../proto/index.js';
 import { InnertubeError } from '../../../utils/Utils.js';
 import { YTNode } from '../../helpers.js';
@@ -175,8 +175,26 @@ export default class Comment extends YTNode {
 
     return { ...response, content };
   }
-  getAction(){
-    return this.#actions;
+  async pin(){
+    const action_menu=this.action_menu;
+    if(action_menu){
+		  const items=action_menu.items;
+		  for (const item of items){
+		   if(item.key('text').string()=="Pin"){
+				 var obj=JSON.parse(JSON.stringify(item.key('endpoint').object()));
+				  console.info(obj.payload.globalConfiguration.params);
+				  const target_action=obj.payload.globalConfiguration.params;
+				   const response = await this.#actions?.execute(
+            PerformCommentActionEndpoint.PATH, PerformCommentActionEndpoint.build({
+              client: 'ANDROID',
+              actions: [ target_action ]
+            })
+          );
+				   console.info(response);
+		   }
+		 
+			}
+	  }
   }
   setActions(actions: Actions | undefined) {
     this.#actions = actions;
