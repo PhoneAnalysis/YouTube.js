@@ -1,5 +1,7 @@
 import { Innertube, UniversalCache } from 'youtubei.js';
-
+// import { Innertube } from  '../../src/Innertube.ts';
+// const Innertube = require( '../../src/Innertube.ts');
+// const UniversalCache = require( '../../src/utils/Cache.ts');
 (async () => {
   const yt = await Innertube.create({ cache: new UniversalCache(false), generate_session_locally: true });
 

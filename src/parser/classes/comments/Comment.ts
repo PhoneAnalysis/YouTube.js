@@ -14,10 +14,12 @@ import { CreateCommentEndpoint, PerformCommentActionEndpoint } from '../../../co
 import Proto from '../../../proto/index.js';
 import { InnertubeError } from '../../../utils/Utils.js';
 import { YTNode } from '../../helpers.js';
-
+import  NavigationEndpoint from '../NavigationEndpoint.js';
+import  ConfirmDialog  from '../ConfirmDialog.js';
 import type Actions from '../../../core/Actions.js';
 import type { ApiResponse } from '../../../core/Actions.js';
 import type { RawNode } from '../../index.js';
+import Button from '../Button.js';
 
 export default class Comment extends YTNode {
   static type = 'Comment';
@@ -175,35 +177,28 @@ export default class Comment extends YTNode {
 
     return { ...response, content };
   }
-  async pin(){
-    const action_menu=this.action_menu;
-    if(action_menu){
-		  const items=action_menu.items;
-		  for (const item of items){
-		   if(item.key('text').string()=="Pin"){
-				 var obj=JSON.parse(JSON.stringify(item.key('endpoint').object()));
-				  console.info(obj.payload.globalConfiguration.params);
-				  const target_action=obj.payload.globalConfiguration.params;
-          console.info({
-            key: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
-            actions: [ target_action ],
-            ...{
-              client: 'ANDROID'
-            }});
-				   const response = await this.#actions?.execute(
-            PerformCommentActionEndpoint.PATH,{
-              key: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
-              actions: [ target_action ],
-              ...{
-                client: 'ANDROID'
-              }
-            }
-          );
-				   console.info(response);
-		   }
-		 
-			}
-	  }
+  async pin(): Promise<ApiResponse>{
+    if (!this.#actions)
+      throw new InnertubeError('An active caller must be provide to perform this operation.');
+    var pinMenu;
+    if(!this.action_menu)
+      throw new InnertubeError('No Action Menu Pin');
+    const items=this.action_menu.items;
+    for (const item of items){
+      if(item.key('text').string()=="Pin"){
+      pinMenu=item;
+      break;
+      }
+    }
+    if (!pinMenu)
+      throw new InnertubeError('No Permission Pin');
+    console.info("Pin........");
+    const obj= pinMenu.key('endpoint').object() as NavigationEndpoint;
+    //  console.info(obj);
+    const confirm_button = obj?.dialog?.key('confirm_button').object() as Button;
+    //  console.info(confirm_button);
+    const response = await  confirm_button?.endpoint?.call(this.#actions, { parse: false });
+    return response;
   }
   getActions(){
     return this.#actions;
